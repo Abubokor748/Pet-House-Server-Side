@@ -95,6 +95,19 @@ async function run() {
       res.send(result);
     });
 
+    // update a pet
+    app.put("/pets/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedPet = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: updatedPet,
+      };
+      const result = await petCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
     // by email get pets
     app.get("/pets", async (req, res) => {
       const email = req.query.email;
@@ -214,6 +227,23 @@ async function run() {
       res.send(result);
     });
 
+    // update campaign
+    app.put("/campaigns/:id", verifyToken, async (req, res) => {
+      const id = req.params.id;
+      const updatedCampaign = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: updatedCampaign,
+      };
+      const result = await campaignCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
+
     //   get all the adoption req*
     app.get("/campaigns", async (req, res) => {
       const email = req.query.email;
@@ -259,7 +289,7 @@ async function run() {
     });
 
     //   get adoption req all and email*
-    app.get("/adoptions",  async (req, res) => {
+    app.get("/adoptions", async (req, res) => {
       const email = req.query.email;
 
       let query = {};
